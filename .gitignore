@@ -1,4 +1,36 @@
+# Secrets
 .mcp.json
 .env
 .env.local
+.env.*.local
+
+# Supabase
+supabase/.branches/
+supabase/.temp/
+supabase/.env
+
+# Deno
+.deno/
+.dccache
+
+# Node (gdyby coś dorzuciło npm tooling)
+node_modules/
+
+# Build outputs
+dist/
+coverage/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+
+# Logs
+*.log
+npm-debug.log*

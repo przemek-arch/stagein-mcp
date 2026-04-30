@@ -8,23 +8,23 @@ Workflow: pick top unchecked, read plan, implement, test, commit, mark `[x]`.
 
 ## Phase 0 — Pre-flight
 
-- [ ] `git init` in repo root, set `main` as default branch
-- [ ] Add `git remote add origin git@github.com:przemek-arch/stagein-mcp.git`
-- [ ] Create `.gitignore` (Deno + Supabase + macOS + IDE)
-- [ ] Create `LICENSE` (MIT, owner: Przemysław Kołakowski)
-- [ ] Create `README.md` skeleton (badges, description, quickstart placeholder, links)
-- [ ] Create `PRIVACY.md` skeleton (will be filled in Phase 5)
-- [ ] `supabase init` — initialize Supabase project structure
-- [ ] `supabase link --project-ref zrirjplulfqmjgtdwspt`
-- [ ] Create directory structure per `CLAUDE.md` § Architecture
-- [ ] Create empty placeholder files: `supabase/functions/mcp/index.ts`, `supabase/functions/mcp/lib/.gitkeep`, etc.
-- [ ] First commit: `chore: initial repo scaffold`
-- [ ] Push to GitHub
-- [ ] Setup branch protection on `main` (require PR, require typecheck CI)
-- [ ] Create `.github/workflows/ci.yml` — typecheck + Deno lint on PR
-- [ ] Create `.github/workflows/deploy.yml` — `supabase functions deploy mcp` on merge to main
-- [ ] DNS: configure CNAME `mcp.stagein.pl` → `[ref].functions.supabase.co` (in domain registrar + Supabase Dashboard → Custom Domains)
-- [ ] Verify custom domain reachability with `curl https://mcp.stagein.pl/functions/v1/health`
+- [x] `git init` in repo root, set `main` as default branch
+- [x] Add `git remote add origin git@github.com:przemek-arch/stagein-mcp.git`
+- [x] Create `.gitignore` (Deno + Supabase + macOS + IDE)
+- [x] Create `LICENSE` (MIT, owner: Przemysław Kołakowski)
+- [x] Create `README.md` skeleton (badges, description, quickstart placeholder, links)
+- [x] Create `PRIVACY.md` skeleton (will be filled in Phase 5)
+- [x] `supabase init` — initialize Supabase project structure
+- [x] `supabase link --project-ref zrirjplulfqmjgtdwspt`
+- [x] Create directory structure per `CLAUDE.md` § Architecture
+- [x] Create empty placeholder files: `supabase/functions/mcp/index.ts`, `supabase/functions/mcp/lib/.gitkeep`, etc.
+- [x] First commit: `chore: initial repo scaffold` (65b29d4)
+- [x] Push to GitHub
+- [ ] Setup branch protection on `main` (require PR, require typecheck CI) *(manual via GitHub UI)*
+- [x] Create `.github/workflows/ci.yml` — typecheck + Deno lint on PR
+- [x] Create `.github/workflows/deploy.yml` — `supabase functions deploy mcp` on merge to main
+- [ ] DNS: configure CNAME `mcp.stagein.pl` → `[ref].functions.supabase.co` (in domain registrar + Supabase Dashboard → Custom Domains) *(deferred to Phase 1B)*
+- [ ] Verify custom domain reachability with `curl https://mcp.stagein.pl/functions/v1/health` *(deferred to Phase 1B)*
 
 ## Phase 1A — DB migrations
 
