@@ -147,6 +147,7 @@ To be created in Phase 1 migrations:
 - **Do NOT** translate Polish event titles or descriptions in responses.
 - **Do NOT** use Title Case in user-facing strings — sentence case only.
 - **Do NOT** assume `pgvector` is enabled — it is in v3, NOT v1.
+- **Do NOT** deploy MCP function without `--no-verify-jwt` flag — MCP clients manage their own auth, Supabase JWT layer would block them. The `deploy.yml` workflow uses this flag.
 
 ## Workflow
 
