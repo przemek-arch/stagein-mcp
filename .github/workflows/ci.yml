@@ -17,7 +17,11 @@ jobs:
           deno-version: v1.x
 
       - name: Deno lint
-        run: deno lint supabase/functions
+        run: |
+          cd supabase/functions/mcp
+          deno lint .
 
       - name: Deno typecheck
-        run: deno check supabase/functions/mcp/index.ts
+        run: |
+          cd supabase/functions/mcp
+          deno check index.ts

@@ -22,4 +22,4 @@ jobs:
       - name: Deploy MCP edge function
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-        run: supabase functions deploy mcp --project-ref zrirjplulfqmjgtdwspt
+        run: supabase functions deploy mcp --no-verify-jwt --project-ref zrirjplulfqmjgtdwspt
