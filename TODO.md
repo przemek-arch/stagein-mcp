@@ -28,11 +28,11 @@ Workflow: pick top unchecked, read plan, implement, test, commit, mark `[x]`.
 
 ## Phase 1A — DB migrations
 
-- [ ] `supabase migration new enable_extensions` — add `earthdistance`, `cube`, `pg_trgm`
-- [ ] `supabase migration new indexes_for_mcp` — see plan § 8 Phase 1A for full SQL
-- [ ] `supabase migration new mcp_rate_limit_table` — table + cleanup function + pg_cron schedule
-- [ ] `supabase migration new mcp_oauth_tables` — `mcp_oauth_clients` + `mcp_oauth_codes`
-- [ ] `supabase db push` to apply all
+- [x] `supabase migration new enable_extensions` — add `earthdistance`, `cube`, `pg_trgm`, `pg_cron`
+- [x] `supabase migration new indexes_for_mcp` — 5 indexes (status_date/date/fts dropped as redundant vs existing prod indexes)
+- [x] `supabase migration new mcp_rate_limit_table` — table + cleanup function + pg_cron schedule (column `window_start`, `window` is reserved keyword)
+- [x] `supabase migration new mcp_oauth_tables` — `mcp_oauth_clients` + `mcp_oauth_codes`
+- [x] Apply migrations to production *(via Supabase MCP `apply_migration` instead of `db push --linked` — see [docs/migrations.md](docs/migrations.md) for rationale)*
 - [ ] Run `EXPLAIN ANALYZE` on each of 6 read query types — record in `docs/performance-baseline.md`
 - [ ] Decide on `v_events_full` view based on perf measurements
 - [ ] `supabase gen types typescript --linked > supabase/functions/mcp/types/database.ts`

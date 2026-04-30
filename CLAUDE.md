@@ -97,7 +97,7 @@ This tagging uses the existing `affiliate_clicks.section` column (text, nullable
 ### Rate limiting
 - 60 req/min per IP (anonymous).
 - 600 req/h per authenticated user.
-- Storage: `mcp_rate_limit` table with `INSERT ... ON CONFLICT (ip, window) DO UPDATE SET count = count + 1`.
+- Storage: `mcp_rate_limit` table with `INSERT ... ON CONFLICT (ip, window_start) DO UPDATE SET count = count + 1`.
 - Cleanup: `pg_cron` job every hour.
 
 ### Error handling
