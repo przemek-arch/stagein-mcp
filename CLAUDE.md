@@ -39,6 +39,12 @@ PRIVACY.md
 LICENSE                   # MIT
 ```
 
+### Routing convention
+
+Supabase Edge Runtime forwards the full request path INCLUDING function name. A request to `/functions/v1/mcp/health` arrives at the Deno handler as `/mcp/health`. The Hono app uses `.basePath("/mcp")` to strip this prefix, so all route definitions inside the app are written without the `/mcp` prefix (e.g. `app.get("/health", ...)`).
+
+If you ever change the function name from `mcp` to something else, update the basePath accordingly.
+
 ## Key conventions
 
 ### Language
