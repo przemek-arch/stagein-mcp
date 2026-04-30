@@ -8,7 +8,10 @@ import { Hono } from "hono";
 import { SERVER_NAME, SERVER_TITLE, VERSION } from "./lib/version.ts";
 import { admin } from "./lib/supabase.ts";
 
-const app = new Hono();
+// Supabase Edge Runtime forwards full path including function name to the handler.
+// Request to /functions/v1/mcp/health arrives as /mcp/health — basePath strips the /mcp prefix
+// so route definitions can stay clean.
+const app = new Hono().basePath("/mcp");
 
 // CORS for MCP clients (Claude.ai, ChatGPT, Cursor)
 app.use("*", async (c, next) => {
@@ -85,4 +88,19 @@ app.all("/", async (c) => {
   return transport.handleRequest(c);
 });
 
-Deno.serve(app.fetch);
+// Wrap fetch with structured access log for observability in Supabase Logs.
+Deno.serve((req) => {
+  const start = Date.now();
+  const url = new URL(req.url);
+  const response = app.fetch(req);
+  return Promise.resolve(response).then((res) => {
+    console.log(JSON.stringify({
+      at: "request",
+      method: req.method,
+      path: url.pathname,
+      status: res.status,
+      duration_ms: Date.now() - start,
+    }));
+    return res;
+  });
+});
