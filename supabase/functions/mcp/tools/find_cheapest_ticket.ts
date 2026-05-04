@@ -6,8 +6,8 @@ import { affiliateUrl, clientSection } from "../lib/affiliate.ts";
 
 const InputSchema = z.object({
   event_id: z.string().uuid().describe("Event UUID"),
-  sale_type: z.enum(["primary", "secondary", "any"]).default("any")
-    .describe("Filter by primary (official) or secondary (resale) market. 'any' returns cheapest across both."),
+  sale_type: z.enum(["primary", "resale", "any"]).default("any")
+    .describe("Filter by primary (official sale) or resale (secondary market). 'any' returns cheapest across both."),
 });
 
 type Input = z.infer<typeof InputSchema>;

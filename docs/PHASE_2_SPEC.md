@@ -773,8 +773,8 @@ import { affiliateUrl, clientSection } from "../lib/affiliate.ts";
 
 const InputSchema = z.object({
   event_id: z.string().uuid().describe("Event UUID"),
-  sale_type: z.enum(["primary", "secondary", "any"]).default("any")
-    .describe("Filter by primary (official) or secondary (resale) market. 'any' returns cheapest across both."),
+  sale_type: z.enum(["primary", "resale", "any"]).default("any")
+    .describe("Filter by primary (official sale) or resale (secondary market). 'any' returns cheapest across both."),
 });
 
 export function registerFindCheapestTicket(mcp: McpServer) {
@@ -859,6 +859,8 @@ export function registerTools(mcp: McpServer) {
   registerFindCheapestTicket(mcp);
 }
 ```
+
+> **Erratum (2026-05-04):** Original spec §2A-2.4 used `z.enum(["primary", "secondary", "any"])` — wrong. Production DB uses `'primary'` and `'resale'` (verified 2026-05-04: 5615 primary, 1564 resale, 0 secondary). Discovered during Phase 2A-2 Stage 1 testing. Fixed in commit fix/sale-type-enum-resale.
 
 ## 2A-2.6 Test plan
 
