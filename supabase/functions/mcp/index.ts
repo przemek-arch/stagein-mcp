@@ -8,6 +8,7 @@ import { Hono } from "hono";
 import { SERVER_NAME, SERVER_TITLE, VERSION } from "./lib/version.ts";
 import { admin } from "./lib/supabase.ts";
 import { AUTHORIZATION_ENDPOINT, TOKEN_ENDPOINT } from "./lib/issuer.ts";
+import { authContext } from "./lib/auth_context.ts";
 import { authorizationServerMetadata, protectedResourceMetadata } from "./oauth/discovery.ts";
 import { registerClient } from "./oauth/register.ts";
 import { authorize, submitEmail } from "./oauth/authorize.ts";
@@ -77,7 +78,7 @@ app.get("/manifest", (c) =>
     privacy_policy: "https://stagein.pl/privacy",
     categories: ["travel", "entertainment", "events"],
     capabilities: {
-      tools: { count: 6, status: "phase-2a-4" },
+      tools: { count: 7, status: "phase-2b-1" },
       auth: {
         type: "oauth-2.1",
         oauth_endpoints: {
@@ -111,11 +112,20 @@ const mcp = new McpServer({
 });
 registerTools(mcp);
 
-// MCP protocol handler at root — Bearer JWT required (RFC 6750)
+// MCP protocol handler at root — Bearer JWT required (RFC 6750).
+// requireAuth middleware sets c.get("auth"); we propagate it via
+// AsyncLocalStorage so write tools can call requireAuthContext()
+// without changing the MCP SDK handler signature.
 app.all("/", requireAuth, async (c) => {
-  const transport = new StreamableHTTPTransport();
-  await mcp.connect(transport);
-  return transport.handleRequest(c);
+  const auth = c.get("auth");
+  if (!auth) {
+    return c.json({ error: "internal_error", error_description: "auth context missing after middleware" }, 500);
+  }
+  return await authContext.run(auth, async () => {
+    const transport = new StreamableHTTPTransport();
+    await mcp.connect(transport);
+    return transport.handleRequest(c);
+  });
 });
 
 // Wrap fetch with structured access log for observability in Supabase Logs.
