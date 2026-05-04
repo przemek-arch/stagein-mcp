@@ -930,6 +930,10 @@ supabase/functions/mcp/tools/
 
 ## 2A-3.3 `tools/search_by_artist.ts`
 
+> **Erratum (2026-05-04):** Original §2A-3.3 used `.ilike("name", "%" + input.artist_name + "%")` and called it "trigram fuzzy matching" — that was wrong. ILIKE is substring match (using trigram index for speed but not for fuzzy logic). Real fuzzy match needs pg_trgm `%` operator. Plus original used `Promise.all(artists.map(...))` which made N+1 queries. Both fixed in commit fix/search-by-artist-fuzzy-rpc via new RPC `search_artists_with_events_rpc`. Performance improved from 3355ms (Lady Pank exact) to ~36ms (~93× faster). Discovered during Phase 2A-3 Stage 1 testing.
+
+> **Note:** Implementation diverged from this spec block. See `supabase/functions/mcp/tools/search_by_artist.ts` and `supabase/migrations/20260504143000_search_artists_with_events_rpc.sql` for actual implementation. The spec block below is retained for historical context only.
+
 ```ts
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
