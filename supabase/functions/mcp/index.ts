@@ -11,6 +11,8 @@ import { authorizationServerMetadata, protectedResourceMetadata } from "./oauth/
 import { registerClient } from "./oauth/register.ts";
 import { authorize, submitEmail } from "./oauth/authorize.ts";
 import { callback } from "./oauth/callback.ts";
+import { tokenExchange } from "./oauth/token.ts";
+import { requireAuth } from "./oauth/middleware.ts";
 
 // Supabase Edge Runtime forwards full path including function name to the handler.
 // Request to /functions/v1/mcp/health arrives as /mcp/health — basePath strips the /mcp prefix
@@ -91,14 +93,17 @@ app.get("/oauth/authorize", authorize);
 app.post("/oauth/authorize/email", submitEmail);
 app.get("/oauth/callback", callback);
 
+// OAuth 2.1 token exchange (RFC 6749 §4.1.3 + RFC 7636 PKCE)
+app.post("/oauth/token", tokenExchange);
+
 // MCP server instance (tools registered in Phase 2)
 const mcp = new McpServer({
   name: SERVER_NAME,
   version: VERSION,
 });
 
-// MCP protocol handler at root
-app.all("/", async (c) => {
+// MCP protocol handler at root — Bearer JWT required (RFC 6750)
+app.all("/", requireAuth, async (c) => {
   const transport = new StreamableHTTPTransport();
   await mcp.connect(transport);
   return transport.handleRequest(c);
