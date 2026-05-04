@@ -10,6 +10,7 @@ export interface AuthContext {
   user_id: string;
   client_id: string;
   scope: string;
+  section: string;  // pre-computed affiliate section slug, e.g., "mcp:claude"
 }
 
 export const authContext = new AsyncLocalStorage<AuthContext>();
