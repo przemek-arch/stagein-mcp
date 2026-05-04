@@ -7,7 +7,8 @@
     "npm:@modelcontextprotocol/sdk@^1.29.0": "1.29.0_zod@4.4.1",
     "npm:@supabase/supabase-js@^2.105.1": "2.105.1",
     "npm:hono@^4.12.16": "4.12.16",
-    "npm:openai@^4.52.5": "4.104.0_zod@4.4.1"
+    "npm:openai@^4.52.5": "4.104.0_zod@4.4.1",
+    "npm:zod@^4.1.13": "4.4.1"
   },
   "jsr": {
     "@supabase/functions-js@2.105.1": {

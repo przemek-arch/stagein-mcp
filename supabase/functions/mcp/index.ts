@@ -7,6 +7,8 @@ import { Hono } from "hono";
 
 import { SERVER_NAME, SERVER_TITLE, VERSION } from "./lib/version.ts";
 import { admin } from "./lib/supabase.ts";
+import { authorizationServerMetadata, protectedResourceMetadata } from "./oauth/discovery.ts";
+import { registerClient } from "./oauth/register.ts";
 
 // Supabase Edge Runtime forwards full path including function name to the handler.
 // Request to /functions/v1/mcp/health arrives as /mcp/health — basePath strips the /mcp prefix
@@ -74,6 +76,13 @@ app.get("/manifest", (c) =>
     },
   })
 );
+
+// OAuth 2.1 discovery endpoints (RFC 8414, RFC 9728)
+app.get("/.well-known/oauth-authorization-server", authorizationServerMetadata);
+app.get("/.well-known/oauth-protected-resource", protectedResourceMetadata);
+
+// OAuth 2.1 Dynamic Client Registration (RFC 7591)
+app.post("/oauth/register", registerClient);
 
 // MCP server instance (tools registered in Phase 2)
 const mcp = new McpServer({
