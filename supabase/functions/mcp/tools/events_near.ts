@@ -1,7 +1,8 @@
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { admin } from "../lib/supabase.ts";
-import { permalink, affiliateUrl, clientSection } from "../lib/affiliate.ts";
+import { permalink, affiliateUrl } from "../lib/affiliate.ts";
+import { requireAuthContext } from "../lib/auth_context.ts";
 
 const InputSchema = z.object({
   latitude: z.number().min(-90).max(90).describe("Search center latitude in decimal degrees"),
@@ -34,7 +35,8 @@ export function registerEventsNear(mcp: McpServer) {
     InputSchema.shape,
     async (input: Input, _extra: unknown) => {
       const start = Date.now();
-      const section = clientSection(undefined);
+      const auth = requireAuthContext();
+      const section = auth.section;
       const today = new Date().toISOString().slice(0, 10);
 
       // Use earthdistance ll_to_earth for radius search via raw SQL

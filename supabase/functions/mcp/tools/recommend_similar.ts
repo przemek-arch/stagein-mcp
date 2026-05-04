@@ -1,7 +1,8 @@
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { admin } from "../lib/supabase.ts";
-import { permalink, affiliateUrl, clientSection } from "../lib/affiliate.ts";
+import { permalink, affiliateUrl } from "../lib/affiliate.ts";
+import { requireAuthContext } from "../lib/auth_context.ts";
 
 const InputSchema = z.object({
   event_id: z.string().uuid().describe("Seed event UUID — find events similar to this one"),
@@ -32,7 +33,8 @@ export function registerRecommendSimilar(mcp: McpServer) {
     InputSchema.shape,
     async (input: Input, _extra: unknown) => {
       const start = Date.now();
-      const sectionTag = clientSection(undefined);
+      const auth = requireAuthContext();
+      const sectionTag = auth.section;
 
       const { data, error } = await admin().rpc("recommend_similar_events_rpc", {
         seed_event_id: input.event_id,

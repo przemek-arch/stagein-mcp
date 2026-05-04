@@ -2,7 +2,8 @@ import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { admin } from "../lib/supabase.ts";
 import { availableListings } from "../lib/queries.ts";
-import { permalink, affiliateUrl, clientSection } from "../lib/affiliate.ts";
+import { permalink, affiliateUrl } from "../lib/affiliate.ts";
+import { requireAuthContext } from "../lib/auth_context.ts";
 
 interface EventDetailRow {
   id: string;
@@ -72,7 +73,8 @@ export function registerGetEvent(mcp: McpServer) {
     InputSchema.shape,
     async (input: Input, _extra: unknown) => {
       const start = Date.now();
-      const section = clientSection(undefined);
+      const auth = requireAuthContext();
+      const section = auth.section;
 
       // Fetch event with venue and artist
       const { data: eventRaw, error: evtErr } = await admin()

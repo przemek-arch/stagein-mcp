@@ -2,7 +2,8 @@ import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { admin } from "../lib/supabase.ts";
 import { availableListings } from "../lib/queries.ts";
-import { affiliateUrl, clientSection } from "../lib/affiliate.ts";
+import { affiliateUrl } from "../lib/affiliate.ts";
+import { requireAuthContext } from "../lib/auth_context.ts";
 
 const InputSchema = z.object({
   event_id: z.string().uuid().describe("Event UUID"),
@@ -19,7 +20,8 @@ export function registerFindCheapestTicket(mcp: McpServer) {
     InputSchema.shape,
     async (input: Input, _extra: unknown) => {
       const start = Date.now();
-      const section = clientSection(undefined);
+      const auth = requireAuthContext();
+      const section = auth.section;
 
       let qb = admin()
         .from("listings")
