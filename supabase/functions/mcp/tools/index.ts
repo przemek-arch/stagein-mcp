@@ -4,6 +4,7 @@ import { registerGetEvent } from "./get_event.ts";
 import { registerFindCheapestTicket } from "./find_cheapest_ticket.ts";
 import { registerSearchByArtist } from "./search_by_artist.ts";
 import { registerEventsNear } from "./events_near.ts";
+import { registerRecommendSimilar } from "./recommend_similar.ts";
 
 export function registerTools(mcp: McpServer) {
   registerSearchEvents(mcp);
@@ -11,6 +12,6 @@ export function registerTools(mcp: McpServer) {
   registerFindCheapestTicket(mcp);
   registerSearchByArtist(mcp);
   registerEventsNear(mcp);
-  // Phase 2A-4 adds: registerRecommendSimilar
+  registerRecommendSimilar(mcp);
   // Phase 2B-1 adds: registerTrackPrice, registerFollowArtist, registerSubscribeNewsletter
 }
