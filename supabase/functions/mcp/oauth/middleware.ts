@@ -1,5 +1,6 @@
 import type { MiddlewareHandler } from "hono";
 import { verifyAccessToken } from "./jwt.ts";
+import { getClientSection } from "../lib/oauth_client.ts";
 
 declare module "hono" {
   interface ContextVariableMap {
@@ -7,6 +8,7 @@ declare module "hono" {
       user_id: string;
       client_id: string;
       scope: string;
+      section: string;
     };
   }
 }
@@ -31,10 +33,13 @@ export const requireAuth: MiddlewareHandler = async (c, next) => {
     });
   }
 
+  const section = await getClientSection(claims.client_id);
+
   c.set("auth", {
     user_id: claims.sub,
     client_id: claims.client_id,
     scope: claims.scope,
+    section,
   });
 
   await next();
