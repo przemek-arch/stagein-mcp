@@ -154,6 +154,7 @@ To be created in Phase 1 migrations:
 - **Do NOT** use Title Case in user-facing strings — sentence case only.
 - **Do NOT** assume `pgvector` is enabled — it is in v3, NOT v1.
 - **Do NOT** deploy MCP function without `--no-verify-jwt` flag — MCP clients manage their own auth, Supabase JWT layer would block them. The `deploy.yml` workflow uses this flag.
+- **Do NOT** assume `SUPABASE_JWT_SECRET` is auto-injected in Edge Functions. It is NOT. The MCP server uses a manually-set `MCP_JWT_SECRET` in Supabase Dashboard. If you redeploy and JWT signing fails with 500, check that the secret exists.
 
 ## Workflow
 

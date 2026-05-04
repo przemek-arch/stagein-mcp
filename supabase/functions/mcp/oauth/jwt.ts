@@ -87,8 +87,8 @@ export async function verifyAccessToken(token: string): Promise<AccessTokenClaim
 let _key: CryptoKey | null = null;
 async function getKey(): Promise<CryptoKey> {
   if (_key) return _key;
-  const secret = Deno.env.get("SUPABASE_JWT_SECRET");
-  if (!secret) throw new Error("SUPABASE_JWT_SECRET not available in env");
+  const secret = Deno.env.get("MCP_JWT_SECRET");
+  if (!secret) throw new Error("MCP_JWT_SECRET not available in env. Set it in Supabase Dashboard → Settings → Edge Functions → Secrets.");
   _key = await crypto.subtle.importKey(
     "raw",
     new TextEncoder().encode(secret),
