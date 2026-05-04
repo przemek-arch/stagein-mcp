@@ -7,12 +7,14 @@ import { Hono } from "hono";
 
 import { SERVER_NAME, SERVER_TITLE, VERSION } from "./lib/version.ts";
 import { admin } from "./lib/supabase.ts";
+import { AUTHORIZATION_ENDPOINT, TOKEN_ENDPOINT } from "./lib/issuer.ts";
 import { authorizationServerMetadata, protectedResourceMetadata } from "./oauth/discovery.ts";
 import { registerClient } from "./oauth/register.ts";
 import { authorize, submitEmail } from "./oauth/authorize.ts";
 import { callback } from "./oauth/callback.ts";
 import { tokenExchange } from "./oauth/token.ts";
 import { requireAuth } from "./oauth/middleware.ts";
+import { registerTools } from "./tools/index.ts";
 
 // Supabase Edge Runtime forwards full path including function name to the handler.
 // Request to /functions/v1/mcp/health arrives as /mcp/health — basePath strips the /mcp prefix
@@ -75,8 +77,14 @@ app.get("/manifest", (c) =>
     privacy_policy: "https://stagein.pl/privacy",
     categories: ["travel", "entertainment", "events"],
     capabilities: {
-      tools: { count: 0, status: "phase-1b-skeleton" },
-      auth: { type: "none", oauth_planned: "phase-1c" },
+      tools: { count: 1, status: "phase-2a-1" },
+      auth: {
+        type: "oauth-2.1",
+        oauth_endpoints: {
+          authorization_endpoint: AUTHORIZATION_ENDPOINT,
+          token_endpoint: TOKEN_ENDPOINT,
+        },
+      },
     },
   })
 );
@@ -96,11 +104,12 @@ app.get("/oauth/callback", callback);
 // OAuth 2.1 token exchange (RFC 6749 §4.1.3 + RFC 7636 PKCE)
 app.post("/oauth/token", tokenExchange);
 
-// MCP server instance (tools registered in Phase 2)
+// MCP server instance + tool registration
 const mcp = new McpServer({
   name: SERVER_NAME,
   version: VERSION,
 });
+registerTools(mcp);
 
 // MCP protocol handler at root — Bearer JWT required (RFC 6750)
 app.all("/", requireAuth, async (c) => {
