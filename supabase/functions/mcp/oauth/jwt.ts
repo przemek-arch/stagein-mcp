@@ -2,8 +2,8 @@ import { ISSUER } from "../lib/issuer.ts";
 
 /**
  * MCP access token claims.
- * Uses HS256 signed by SUPABASE_JWT_SECRET (auto-injected env var).
- * Compatible with Supabase Auth so we COULD reuse Supabase verification later.
+ * Uses HS256 signed by MCP_JWT_SECRET (set manually in Supabase Dashboard → Settings → Edge Functions → Secrets).
+ * Independent of Supabase Auth tokens — separate trust domain.
  */
 export interface AccessTokenClaims {
   iss: string;          // issuer URL
