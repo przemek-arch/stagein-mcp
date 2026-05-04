@@ -1075,8 +1075,8 @@ import { ISSUER } from "../lib/issuer.ts";
 
 /**
  * MCP access token claims.
- * Uses HS256 signed by SUPABASE_JWT_SECRET (auto-injected env var).
- * Compatible with Supabase Auth so we COULD reuse Supabase verification later.
+ * Uses HS256 signed by MCP_JWT_SECRET (set manually in Supabase Dashboard → Settings → Edge Functions → Secrets).
+ * Independent of Supabase Auth tokens — separate trust domain.
  */
 export interface AccessTokenClaims {
   iss: string;          // issuer URL
@@ -1555,7 +1555,14 @@ For production: Phase 1D should configure custom SMTP (Resend, Postmark, or AWS 
 
 ## R3: JWT secret rotation
 
-`SUPABASE_JWT_SECRET` is auto-injected and shared with Supabase Auth. If you rotate it (Dashboard → Settings → API → JWT Secret), all our access tokens become invalid simultaneously. That's by design — but document it.
+`MCP_JWT_SECRET` is set manually in Supabase Dashboard → Settings → Edge Functions → Secrets. It is independent of Supabase Auth's own JWT secret — rotating Supabase Auth's secret does NOT affect our access tokens.
+
+However, if `MCP_JWT_SECRET` itself is rotated (deleted and re-created), all our previously-issued access tokens become invalid simultaneously. There's no graceful migration window. Plan for this:
+
+- Communicate to active clients before rotation
+- Or implement dual-key verification (Phase 3 hardening): keep accepting old key for 1h after rotation while new key is primary for signing
+
+Document the operational runbook for rotation: backup old value, generate new (32+ bytes random), update in Dashboard, deploy any code changes if key derivation logic changed, monitor 401 rate spike.
 
 ## R4: Browser cookies during callback
 
@@ -1615,7 +1622,7 @@ These can ship in any order after 1C.
 # 8. Decision log (preemptive answers to questions Claude Code will ask)
 
 **Q: Why HS256 instead of RS256?**
-A: HS256 is simpler (single shared secret, no key management), works with `SUPABASE_JWT_SECRET` out of the box, and is cryptographically equivalent for our threat model (we're both issuer and verifier — asymmetric crypto would only matter if we wanted external systems to verify our tokens without contacting us, which we don't).
+A: HS256 is simpler (single shared secret, no key management overhead) and is cryptographically equivalent for our threat model (we're both issuer and verifier — asymmetric crypto would only matter if we wanted external systems to verify our tokens without contacting us, which we don't). The HMAC secret is set as `MCP_JWT_SECRET` in Supabase Dashboard.
 
 **Q: Why no refresh tokens in v1?**
 A: See R6. Adds complexity (rotation, revocation, single-use enforcement, longer-lived storage). Not blocker for any submission directory. Magic-link UX is the actual UX cost, and we can add refresh tokens later without breaking changes.
@@ -1681,7 +1688,7 @@ If implementation gets stuck on a subtle issue:
 - **Cryptography questions:** Don't improvise. Ask before deviating from spec — RFC 6749, RFC 7591, RFC 7636, RFC 9728 are the canonical sources.
 - **Supabase Auth quirks:** Look at the actual response shape, don't trust documentation. `console.log(JSON.stringify(...))` everything.
 - **PKCE failures:** 90% of the time it's encoding (base64url vs base64) or whitespace. Verify byte-by-byte.
-- **JWT verification failures:** Check the secret first. `SUPABASE_JWT_SECRET` should be the same env var name in dev and prod.
+- **JWT verification failures:** Check the secret first. `MCP_JWT_SECRET` must be set in Supabase Dashboard → Settings → Edge Functions → Secrets. For local dev: add to `supabase/functions/.env` (gitignored). The env var name is the same in dev and prod.
 
 ---
 
