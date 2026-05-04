@@ -1,7 +1,8 @@
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { admin } from "../lib/supabase.ts";
-import { permalink, affiliateUrl, clientSection } from "../lib/affiliate.ts";
+import { permalink, affiliateUrl } from "../lib/affiliate.ts";
+import { requireAuthContext } from "../lib/auth_context.ts";
 
 const InputSchema = z.object({
   artist_name: z.string().min(2).max(100).describe("Artist name (fuzzy match supported via trigram similarity)"),
@@ -45,7 +46,8 @@ export function registerSearchByArtist(mcp: McpServer) {
     InputSchema.shape,
     async (input: Input, _extra: unknown) => {
       const start = Date.now();
-      const sectionTag = clientSection(undefined);
+      const auth = requireAuthContext();
+      const sectionTag = auth.section;
 
       const { data, error } = await admin().rpc("search_artists_with_events_rpc", {
         query_text: input.artist_name,

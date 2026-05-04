@@ -2,7 +2,8 @@ import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { admin } from "../lib/supabase.ts";
 import { activeUpcomingEvents } from "../lib/queries.ts";
-import { permalink, affiliateUrl, clientSection } from "../lib/affiliate.ts";
+import { permalink, affiliateUrl } from "../lib/affiliate.ts";
+import { requireAuthContext } from "../lib/auth_context.ts";
 
 interface EventRow {
   id: string;
@@ -43,7 +44,8 @@ export function registerSearchEvents(mcp: McpServer) {
     InputSchema.shape,
     async (input: Input, _extra: unknown) => {
       const start = Date.now();
-      const sectionTag = clientSection(undefined); // Phase 2C will fill this
+      const auth = requireAuthContext();
+      const sectionTag = auth.section;
 
       let qb = admin().from("events").select(`
         id, title, subtitle, event_date, event_time, price_min, price_max,
