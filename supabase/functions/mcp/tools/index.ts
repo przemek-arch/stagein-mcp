@@ -6,6 +6,8 @@ import { registerSearchByArtist } from "./search_by_artist.ts";
 import { registerEventsNear } from "./events_near.ts";
 import { registerRecommendSimilar } from "./recommend_similar.ts";
 import { registerTrackPrice } from "./track_price.ts";
+import { registerFollowArtist } from "./follow_artist.ts";
+import { registerSubscribeNewsletter } from "./subscribe_newsletter.ts";
 
 export function registerTools(mcp: McpServer) {
   registerSearchEvents(mcp);
@@ -15,6 +17,6 @@ export function registerTools(mcp: McpServer) {
   registerEventsNear(mcp);
   registerRecommendSimilar(mcp);
   registerTrackPrice(mcp);
-  // Phase 2B-1 adds (next commits in same PR after auth context validation):
-  //   registerFollowArtist, registerSubscribeNewsletter
+  registerFollowArtist(mcp);
+  registerSubscribeNewsletter(mcp);
 }

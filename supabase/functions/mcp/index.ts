@@ -78,7 +78,7 @@ app.get("/manifest", (c) =>
     privacy_policy: "https://stagein.pl/privacy",
     categories: ["travel", "entertainment", "events"],
     capabilities: {
-      tools: { count: 7, status: "phase-2b-1" },
+      tools: { count: 9, status: "phase-2b-1" },
       auth: {
         type: "oauth-2.1",
         oauth_endpoints: {
