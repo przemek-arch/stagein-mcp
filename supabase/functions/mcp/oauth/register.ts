@@ -68,6 +68,7 @@ export async function registerClient(c: Context) {
     client_id: data.client_id,
     client_secret: clientSecret,
     client_id_issued_at: issuedAt,
+    client_secret_expires_at: 0,  // 0 = never expires per RFC 7591 §3.2.1
     client_name: parsed.data.client_name,
     redirect_uris: parsed.data.redirect_uris,
     client_uri: parsed.data.client_uri,
