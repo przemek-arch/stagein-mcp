@@ -10,8 +10,14 @@ export const ClientRegistrationRequest = z.object({
   contacts: z.array(z.string().email()).max(5).optional(),
   tos_uri: z.string().url().optional(),
   policy_uri: z.string().url().optional(),
-  grant_types: z.array(z.literal("authorization_code")).optional(),
-  response_types: z.array(z.literal("code")).optional(),
+  // RFC 7591 §2: client may declare any grant_types/response_types it can use.
+  // We accept any array of strings here — the actual server-side enforcement
+  // happens at token endpoint (only authorization_code is supported) and the
+  // DCR response always echoes back ["authorization_code"] / ["code"] to signal
+  // what we actually support. Strict literal validation rejected real-world
+  // clients (Smithery DCR sent ["authorization_code", "refresh_token"]).
+  grant_types: z.array(z.string()).optional(),
+  response_types: z.array(z.string()).optional(),
   token_endpoint_auth_method: z.enum(["client_secret_post", "none"]).optional(),
 });
 
