@@ -28,6 +28,7 @@ export interface ClientRegistrationResponse {
   client_id: string;
   client_secret: string;
   client_id_issued_at: number;
+  client_secret_expires_at: number;  // NEW: 0 = never expires per RFC 7591 §3.2.1
   client_name: string;
   redirect_uris: string[];
   client_uri?: string;
