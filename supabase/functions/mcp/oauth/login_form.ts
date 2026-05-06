@@ -62,7 +62,7 @@ export function loginFormHtml(stateToken: string, clientName: string): string {
   <div class="card">
     <h1>Connect to StageIn</h1>
     <p class="sub"><span class="client">${escapeHtml(clientName)}</span> wants to access StageIn data on your behalf.</p>
-    <form method="POST" action="/mcp/oauth/authorize/email">
+    <form method="POST" action="/oauth/authorize/email">
       <input type="hidden" name="state_token" value="${escapeHtml(stateToken)}">
       <label for="email">Your email address</label>
       <input id="email" type="email" name="email" required autofocus placeholder="you@example.com">
