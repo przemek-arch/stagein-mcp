@@ -1,5 +1,6 @@
 import type { Context } from "hono";
 import { admin } from "../lib/supabase.ts";
+import { htmlResponse } from "../lib/html_response.ts";
 import { consumeState } from "./state.ts";
 
 /**
@@ -17,13 +18,13 @@ export async function callback(c: Context) {
   const access_token = url.searchParams.get("access_token");
 
   if (!state_token) {
-    return c.html("<h1>Invalid callback</h1><p>Missing state token.</p>", 400);
+    return htmlResponse("<h1>Invalid callback</h1><p>Missing state token.</p>", 400);
   }
 
   if (!access_token) {
     // Fragment-based response — auto-redirect via JS, with visible fallback button
     // if inline JS is blocked/delayed by browser extensions or privacy modes.
-    return c.html(`<!DOCTYPE html>
+    return htmlResponse(`<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -94,13 +95,13 @@ export async function callback(c: Context) {
   // Verify the access token belongs to a real Supabase user
   const { data: userData, error: userErr } = await admin().auth.getUser(access_token);
   if (userErr || !userData.user) {
-    return c.html("<h1>Invalid session</h1><p>Sign-in failed. Please try again.</p>", 401);
+    return htmlResponse("<h1>Invalid session</h1><p>Sign-in failed. Please try again.</p>", 401);
   }
 
   // Consume state (single-use)
   const state = await consumeState(state_token);
   if (!state) {
-    return c.html("<h1>Session expired</h1><p>The authorization flow expired or was already used.</p>", 400);
+    return htmlResponse("<h1>Session expired</h1><p>The authorization flow expired or was already used.</p>", 400);
   }
 
   // Generate authorization code
@@ -118,7 +119,7 @@ export async function callback(c: Context) {
 
   if (codeErr) {
     console.error("[oauth/callback] failed to store code:", codeErr);
-    return c.html("<h1>Server error</h1><p>Please try again.</p>", 500);
+    return htmlResponse("<h1>Server error</h1><p>Please try again.</p>", 500);
   }
 
   // Build redirect URL with code and original client state
