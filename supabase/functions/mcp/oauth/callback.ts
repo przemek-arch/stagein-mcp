@@ -21,13 +21,74 @@ export async function callback(c: Context) {
   }
 
   if (!access_token) {
-    // Fragment-based response — show a small JS shim that re-issues the request with query params
-    return c.html(`<!DOCTYPE html><html><body><script>
-      const params = new URLSearchParams(window.location.hash.slice(1));
-      const stateToken = new URLSearchParams(window.location.search).get("state_token");
-      params.set("state_token", stateToken);
-      window.location.replace(window.location.pathname + "?" + params.toString());
-    </script><noscript>JavaScript required to complete sign-in.</noscript></body></html>`);
+    // Fragment-based response — auto-redirect via JS, with visible fallback button
+    // if inline JS is blocked/delayed by browser extensions or privacy modes.
+    return c.html(`<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Completing sign-in…</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; background: #0a0a0a; color: #fff; margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+  .card { background: #1a1a1a; border: 1px solid #2a2a2a; padding: 2.5rem; max-width: 24rem; width: 100%; text-align: center; box-sizing: border-box; }
+  h1 { font-size: 1.25rem; font-weight: 700; margin: 0 0 0.5rem; letter-spacing: -0.02em; }
+  p { color: #888; font-size: 0.875rem; line-height: 1.6; margin: 0 0 1.5rem; }
+  button { width: 100%; padding: 0.85rem; background: #C62B0A; color: #fff; border: none; font-size: 0.95rem; font-weight: 600; cursor: pointer; text-transform: uppercase; letter-spacing: 0.05em; }
+  button:hover { background: #a62308; }
+  .hidden { display: none; }
+  .spinner { display: inline-block; width: 1rem; height: 1rem; border: 2px solid #444; border-top-color: #C62B0A; border-radius: 50%; animation: spin 1s linear infinite; vertical-align: middle; margin-right: 0.5rem; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+  <div class="card" id="loading">
+    <h1><span class="spinner"></span>Completing sign-in…</h1>
+    <p>This should only take a moment.</p>
+  </div>
+  <div class="card hidden" id="manual">
+    <h1>One more step</h1>
+    <p>Auto-redirect didn't fire — click below to finish signing in.</p>
+    <button type="button" id="continue-btn">Continue</button>
+  </div>
+  <script>
+    (function () {
+      function buildUrl() {
+        var hashParams = new URLSearchParams(window.location.hash.slice(1));
+        var stateToken = new URLSearchParams(window.location.search).get("state_token");
+        if (stateToken) hashParams.set("state_token", stateToken);
+        return window.location.pathname + "?" + hashParams.toString();
+      }
+      function showManual() {
+        var loading = document.getElementById("loading");
+        var manual = document.getElementById("manual");
+        if (loading) loading.classList.add("hidden");
+        if (manual) manual.classList.remove("hidden");
+        var btn = document.getElementById("continue-btn");
+        if (btn) {
+          btn.onclick = function () { window.location.assign(buildUrl()); };
+        }
+      }
+      try {
+        var target = buildUrl();
+        window.location.replace(target);
+      } catch (e) {
+        showManual();
+        return;
+      }
+      // Fallback: if replace didn't navigate within 2s (blocked / paused),
+      // surface the visible button so the user can finish manually.
+      setTimeout(showManual, 2000);
+    })();
+  </script>
+  <noscript>
+    <div class="card">
+      <h1>JavaScript required</h1>
+      <p>Sign-in cannot complete without JavaScript. Enable it and reload this page.</p>
+    </div>
+  </noscript>
+</body>
+</html>`);
   }
 
   // Verify the access token belongs to a real Supabase user
