@@ -1,6 +1,7 @@
 import type { Context } from "hono";
 import { admin } from "../lib/supabase.ts";
 import { ISSUER } from "../lib/issuer.ts";
+import { htmlResponse } from "../lib/html_response.ts";
 import { generateStateToken, storeState } from "./state.ts";
 import { loginFormHtml } from "./login_form.ts";
 
@@ -83,7 +84,7 @@ export async function authorize(c: Context) {
   });
 
   // Render email entry form
-  return c.html(loginFormHtml(state_token, client.client_name ?? "An MCP client"));
+  return htmlResponse(loginFormHtml(state_token, client.client_name ?? "An MCP client"));
 }
 
 /**
@@ -108,7 +109,7 @@ export async function submitEmail(c: Context) {
     .maybeSingle();
 
   if (!state) {
-    return c.html("<h1>Session expired</h1><p>Please restart the authorization flow.</p>", 400);
+    return htmlResponse("<h1>Session expired</h1><p>Please restart the authorization flow.</p>", 400);
   }
 
   // Trigger Supabase magic link
@@ -123,10 +124,10 @@ export async function submitEmail(c: Context) {
 
   if (error) {
     console.error("[oauth/authorize] signInWithOtp failed:", error);
-    return c.html("<h1>Could not send email</h1><p>Please try again later.</p>", 500);
+    return htmlResponse("<h1>Could not send email</h1><p>Please try again later.</p>", 500);
   }
 
-  return c.html(`<!DOCTYPE html><html><head><title>Check your email</title>
+  return htmlResponse(`<!DOCTYPE html><html><head><title>Check your email</title>
     <style>body{font-family:system-ui;background:#0a0a0a;color:#fff;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;padding:2rem;text-align:center}h1{font-size:1.5rem}p{color:#888;max-width:24rem;line-height:1.6}</style>
     </head><body><div><h1>Check your email</h1>
     <p>We sent a sign-in link to <strong>${escapeHtml(email)}</strong>. Click it to complete the connection. You can close this tab.</p>
