@@ -128,7 +128,7 @@ For each tool: Zod schema, handler, formatter, unit tests (Deno test), integrati
 - [ ] Write full `README.md`: description, tool list with examples, setup instructions for Claude/Cursor/ChatGPT, FAQ, links
 - [ ] Write `docs/TOOLS.md` — full tool reference with schemas
 - [ ] Write `docs/AUTH.md` — OAuth flow for developers
-- [ ] Write `docs/PRIVACY.md` (or update `stagein.pl/privacy`)
+- [x] Privacy policy: canonical at `stagein.pl/polityka-prywatnosci` (section on MCP server; PRIVACY.md is a pointer)
 - [ ] Add MCP section to `stagein.pl/llms.txt`
 - [ ] Create `stagein.pl/mcp` landing page with setup instructions
 - [ ] Create demo account `mcp-demo@stagein.pl` with password (NOT magic-link) for OpenAI review team

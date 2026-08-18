@@ -5,7 +5,7 @@
 This is the **MCP (Model Context Protocol) server for StageIn** — a Polish concert and event ticket aggregator. The server exposes StageIn's database to AI assistants (Claude, ChatGPT, Cursor, etc.) so users can search, discover, and track tickets directly from chat.
 
 - **Production target:** `https://mcp.stagein.pl`
-- **Owner:** Przemysław Kołakowski (Harbor LEGAL / StageIn)
+- **Owner:** Przemysław Kołakowski (StageIn) — contact kontakt@stagein.pl
 - **Phase:** 0 — initial setup
 - **Source of truth for plan:** `STAGEIN_MCP_IMPLEMENTATION_PLAN.md`
 - **Source of truth for tasks:** `TODO.md`

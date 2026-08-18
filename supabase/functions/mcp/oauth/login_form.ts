@@ -70,8 +70,8 @@ export function loginFormHtml(stateToken: string, clientName: string): string {
     </form>
     <p class="legal">
       You'll receive a one-time sign-in link by email.
-      By continuing you agree to our <a href="https://stagein.pl/terms">Terms</a> and
-      <a href="https://stagein.pl/privacy">Privacy Policy</a>.
+      By continuing you agree to our <a href="https://stagein.pl/regulamin">Terms</a> and
+      <a href="https://stagein.pl/polityka-prywatnosci">Privacy Policy</a>.
     </p>
   </div>
 </body>

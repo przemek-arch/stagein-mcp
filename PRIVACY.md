@@ -1,10 +1,10 @@
 # Privacy Policy — StageIn MCP
 
-*This document is a placeholder. The full privacy policy will be drafted in Phase 5 alongside the public launch.*
+*This file is a pointer. The canonical privacy policy — including a dedicated section on the MCP server (OAuth e-mail sign-in, client registrations, tokens, rate-limit IPs) — lives at **https://stagein.pl/polityka-prywatnosci**.*
 
 ## Scope
 
-This policy will cover how the StageIn MCP server (`mcp.stagein.pl`) handles:
+The canonical policy covers how the StageIn MCP server (`mcp.stagein.pl`) handles:
 
 - User identifiers obtained through OAuth (email address from Supabase Auth magic-link).
 - Affiliate click tracking (`affiliate_clicks` table — anonymized partner traffic attribution).
@@ -13,10 +13,10 @@ This policy will cover how the StageIn MCP server (`mcp.stagein.pl`) handles:
 
 ## Data controller
 
-Przemysław Kołakowski / Harbor LEGAL — acting on behalf of StageIn.
+Przemysław Kołakowski (StageIn) — full designation in the canonical policy.
 
-Contact: see `stagein.pl/privacy` (canonical) once Phase 5 is complete.
+Contact: **kontakt@stagein.pl**.
 
 ## Status
 
-Draft. Do not rely on this document for compliance decisions.
+Pointer only — the document of record is https://stagein.pl/polityka-prywatnosci.
