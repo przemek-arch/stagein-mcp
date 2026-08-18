@@ -74,8 +74,8 @@ app.get("/manifest", (c) =>
     description: "MCP server for StageIn — search Polish concert and event tickets aggregated from 7 ticket vendors. Provides AI assistants with structured access to upcoming events, listings with prices, venues, and artists.",
     homepage: "https://stagein.pl",
     documentation: "https://stagein.pl/mcp",
-    contact: "office@harbor.legal",
-    privacy_policy: "https://stagein.pl/privacy",
+    contact: "kontakt@stagein.pl",
+    privacy_policy: "https://stagein.pl/polityka-prywatnosci",
     categories: ["travel", "entertainment", "events"],
     capabilities: {
       tools: { count: 9, status: "phase-2b-1" },
